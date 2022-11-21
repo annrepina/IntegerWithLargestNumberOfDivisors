@@ -13,7 +13,15 @@ namespace IntegerWithLargestNumberOfDivisors
     /// </summary>
     public class NumberOfDivisorsCalculationApplication
     {
+        /// <summary>
+        /// Класс, который делает расчеты по поиску наибольшего кол-ва делителей в одном потоке
+        /// </summary>
         private LargestNumberOfDivisorsCalculation _largestNumberOfDivisorsCalculation;
+
+        /// <summary>
+        /// Класс, который делает расчеты по поиску наибольшего кол-ва делителей в многопотоке
+        /// </summary>
+        private MultiThreadedLargestNumberOfDivisorsCalculation _multiThreadedLargestNumberOfDivisorsCalculation;
 
         /// <summary>
         /// Секундомер
@@ -37,17 +45,23 @@ namespace IntegerWithLargestNumberOfDivisors
 
             InitializeCalculatorForDivisors();
 
-            _stopwatch.Start();
+            LaunchCalculationWithStopwatch();
 
-            _largestNumberOfDivisorsCalculation.LaunchCalculation();
+            PrintSingleThreadResults();
 
-            PrintResults();
+            _stopwatch.Reset();
 
-            _stopwatch?.Stop();
+            LaunchMultiThreadedCalculationWithStopwatch();
 
-            Console.WriteLine($"Время потраченное на вычисления равно {_stopwatch.ElapsedMilliseconds} милисекунд");
+            PrintMultiThreadResults();
+
+            _stopwatch.Reset();
         }
 
+        /// <summary>
+        /// Получить у пользователя число
+        /// </summary>
+        /// <returns></returns>
         private int GetNumber()
         {
             Console.Write("Введите целое положительное число: ");
@@ -64,6 +78,9 @@ namespace IntegerWithLargestNumberOfDivisors
             return number;
         }
 
+        /// <summary>
+        /// Напечатать имя и инструкции к программе
+        /// </summary>
         private void PrintNameAndInstructions()
         {
             Console.SetCursorPosition(Console.WindowWidth / 2, 0);
@@ -73,14 +90,23 @@ namespace IntegerWithLargestNumberOfDivisors
             Console.WriteLine("Введите числа: начало и конец диапазона");
         }
 
+        /// <summary>
+        /// Проверить числа
+        /// </summary>
+        /// <param name="x">Первое число в диапазоне</param>
+        /// <param name="y">Второе число в диапазоне</param>
         private void CheckNumbers(ref int x, ref int y)
         {
             if(x > y)
                 ServiceFunctions.Swap<int>(ref x, ref y);
         }
 
-        private void PrintResults()
+        /// <summary>
+        /// Напечать результаты вычислений работы в одном потоке
+        /// </summary>
+        private void PrintSingleThreadResults()
         {
+            Console.WriteLine("Вычисления выполненные в одном потоке, имеют такие результаты: ");
             Console.WriteLine($"Наибольшее число делителей среди чисел в диапазоне от {_largestNumberOfDivisorsCalculation.StartNumberOfRange} до {_largestNumberOfDivisorsCalculation.EndNumberOfRange} равно {_largestNumberOfDivisorsCalculation.MaxNumberOfDivisors}");
             Console.WriteLine($"Числа, которые имеют наибольшее количество делителей:");
 
@@ -90,8 +116,32 @@ namespace IntegerWithLargestNumberOfDivisors
             {
                 Console.Write($"{_largestNumberOfDivisorsCalculation.NumbersWithLargestDivisors[i]}\t");
             }
+
+            Console.WriteLine($"Времы, за которое были выполнены вычисления равно: {_stopwatch.ElapsedMilliseconds} милисекунд") ;
         }
 
+        /// <summary>
+        /// Напечатать результаты вычислений работы в многопотоке
+        /// </summary>
+        private void PrintMultiThreadResults()
+        {
+            Console.WriteLine($"Вычисления выполненные в {_multiThreadedLargestNumberOfDivisorsCalculation.NumberOfThreads} потоках, имеют такие результаты: ") ;
+            Console.WriteLine($"Наибольшее число делителей среди чисел в диапазоне от {_largestNumberOfDivisorsCalculation.StartNumberOfRange} до {_largestNumberOfDivisorsCalculation.EndNumberOfRange} равно {_largestNumberOfDivisorsCalculation.MaxNumberOfDivisors}");
+            Console.WriteLine($"Числа, которые имеют наибольшее количество делителей:");
+
+            int maxBound = _largestNumberOfDivisorsCalculation.NumbersWithLargestDivisors.Count;
+
+            for (int i = 0; i < maxBound; i++)
+            {
+                Console.Write($"{_largestNumberOfDivisorsCalculation.NumbersWithLargestDivisors[i]}\t");
+            }
+
+            Console.WriteLine($"\nВремя, за которое были выполнены вычисления равно: {_stopwatch.ElapsedMilliseconds} милисекунд");
+        }
+
+        /// <summary>
+        /// Инициализация калькуляторов для расчетов
+        /// </summary>
         private void InitializeCalculatorForDivisors()
         {
             int startNumber = GetNumber();
@@ -108,6 +158,32 @@ namespace IntegerWithLargestNumberOfDivisors
             CheckNumbers(ref startNumber, ref startNumber);
 
             _largestNumberOfDivisorsCalculation = new LargestNumberOfDivisorsCalculation(startNumber, endNumber);
+
+            _multiThreadedLargestNumberOfDivisorsCalculation = new MultiThreadedLargestNumberOfDivisorsCalculation(_largestNumberOfDivisorsCalculation);
+        }
+
+        /// <summary>
+        /// Запустить расчеты в одном потоке с секундомером
+        /// </summary>
+        private void LaunchCalculationWithStopwatch()
+        {
+            _stopwatch.Start();
+
+            _largestNumberOfDivisorsCalculation.LaunchCalculation();
+
+            _stopwatch?.Stop();
+        }
+
+        /// <summary>
+        /// Запустить расчеты в многопотоке с секундомером
+        /// </summary>
+        private void LaunchMultiThreadedCalculationWithStopwatch()
+        {
+            _stopwatch.Start();
+
+            _multiThreadedLargestNumberOfDivisorsCalculation.LaunchMultiThreadedCalculation();
+
+            _stopwatch?.Stop();
         }
     }
 }

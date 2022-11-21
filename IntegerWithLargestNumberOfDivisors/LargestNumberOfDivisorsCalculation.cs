@@ -74,17 +74,14 @@ namespace IntegerWithLargestNumberOfDivisors
         }
 
         /// <summary>
-        /// Посчитать все делители всех чисел
+        /// Посчитать максимальное кол-во делителей каждого числа
         /// </summary>
+        /// <param name="startNumber">Стартовое число вычислений</param>
+        /// <param name="endNumber">Конечное число вычислений</param>
+        /// <param name="startIndex">Стартовый индекс, по которому заносятся данные в массив</param>
+        /// <param name="endIndex">Конечный индекс, по которому заносятся данные в массив</param>
         public void CountAllNumbersOfDivisors(int startNumber, int endNumber, int startIndex, int endIndex)
         {
-            //int maxBound = EndNumberOfRange - StartNumberOfRange + 1;
-
-            //// создаем массив для хранения всех делителей
-            //int[] divisors = new int[_endNumberOfRange - _startNumberOfRange + 1];
-
-            //int max = EndNumberOfRange + 1;
-
             for (int i = startNumber, j = startIndex; i < endNumber && j < endIndex; ++i, ++j)
             {
                 int numberOfDivisors = CountMaxNumberOfDivisors(i);
@@ -92,26 +89,6 @@ namespace IntegerWithLargestNumberOfDivisors
                 _divisors[j] = numberOfDivisors;
             }
         }
-
-
-        //private void CountAllNumbersOfDivisors()
-        //{
-        //    int maxBound = EndNumberOfRange - StartNumberOfRange + 1;
-
-        //    //// создаем массив для хранения всех делителей
-        //    //int[] divisors = new int[_endNumberOfRange - _startNumberOfRange + 1];
-
-        //    int max = EndNumberOfRange + 1;
-
-        //    for (int i = StartNumberOfRange, j = 0; i < max && j < maxBound; ++i, ++j)
-        //    {
-        //        int numberOfDivisors = CountMaxNumberOfDivisors(i);
-
-        //        _divisors[j] = numberOfDivisors;
-        //    }
-        //}
-
-
 
         /// <summary>
         /// Посчитать максимальное кол-во делителей среи всех количеств делителей
@@ -123,14 +100,15 @@ namespace IntegerWithLargestNumberOfDivisors
         }
 
         /// <summary>
-        /// Расчитать каким числа принадлежать максимальные кол-ва делителей
+        /// Расчитать каким числам принадлежат максимальные кол-ва делителей
         /// </summary>
-        /// <returns></returns>
-        private void CalculateAllNumbersWithLargestDivisors()
+        /// <param name="startNumber">Стартовое число вычислений</param>
+        /// <param name="endNumber">Конечное число вычислений</param>
+        /// <param name="startIndex">Стартовый индекс, по которому заносятся данные в массив</param>
+        /// <param name="endIndex">Конечный индекс, по которому заносятся данные в массив</param>
+        public void CalculateAllNumbersWithLargestDivisors(int startNumber, int endNumber, int startIndex, int endIndex)
         {
-            int maxBound = EndNumberOfRange - StartNumberOfRange + 1;
-
-            for(int i = 0, j = StartNumberOfRange; i < maxBound && j <= EndNumberOfRange; ++i, ++j)
+            for(int i = startIndex, j = startNumber; i < endIndex && j < endNumber; ++i, ++j)
             {
                 if (_divisors[i] == MaxNumberOfDivisors)
                 {
@@ -148,27 +126,7 @@ namespace IntegerWithLargestNumberOfDivisors
 
             CalculateMaxNumberOfDivisors();
 
-            CalculateAllNumbersWithLargestDivisors();
+            CalculateAllNumbersWithLargestDivisors(StartNumberOfRange, EndNumberOfRange + 1, 0, EndNumberOfRange - StartNumberOfRange + 1);
         }
-
-        public void AddNumberOfDivisors(int index, int number)
-        {
-            if(index < _divisors.Length && number >= 1)
-            {
-                _divisors[index] = number;
-            }
-        }
-
-        ///// <summary>
-        ///// Возвращает копию текущего объекта
-        ///// </summary>
-        ///// <returns></returns>
-        //public object Clone()
-        //{
-        //    object clone = new LargestNumberOfDivisorsCalculation(StartNumberOfRange, EndNumberOfRange);
-
-        //    return clone;
-
-        //}
     }
 }
